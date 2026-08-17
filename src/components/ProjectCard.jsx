@@ -1,121 +1,164 @@
-function ProjectCard({ project }) {
-  const iconMap = {
-    cloud: (
-      <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15a4.5 4.5 0 004.5 4.5H18a3.75 3.75 0 001.332-7.257 3 3 0 00-3.758-3.848 5.25 5.25 0 00-10.233 2.33A4.502 4.502 0 002.25 15z" />
-      </svg>
-    ),
-    pipeline: (
-      <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M12 17.25h8.25" />
-        <circle cx="6" cy="6.75" r="1.5" fill="currentColor" opacity="0.4" />
-        <circle cx="6" cy="12" r="1.5" fill="currentColor" opacity="0.4" />
-        <circle cx="6" cy="17.25" r="1.5" fill="currentColor" opacity="0.4" />
-      </svg>
-    ),
-    kubernetes: (
-      <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
-      </svg>
-    ),
-    container: (
-      <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
-      </svg>
-    ),
-    monitor: (
-      <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
-      </svg>
-    ),
-    heart: (
-      <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-      </svg>
-    ),
-    terminal: (
-      <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 7.5l3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0021 18V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v12a2.25 2.25 0 002.25 2.25z" />
-      </svg>
-    ),
-  }
+function ProjectCard({ project, onCaseStudy, variant = 'medium' }) {
+  const isCyan = project.category === 'aws' || project.category === 'devops'
 
-  const hasLinks = project.github || project.live
-
-  return (
-    <div className="group relative glass-card rounded-xl overflow-hidden hover:border-accent/15 transition-all duration-500 hover:-translate-y-1.5 hover:shadow-[0_8px_40px_rgba(0,255,65,0.06),0_2px_12px_rgba(0,0,0,0.3)] h-full">
-      <div className="absolute inset-0 bg-gradient-to-b from-accent/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-600" />
-      <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-accent/0 to-transparent group-hover:via-accent/20 transition-all duration-700" />
-
-      <div className="relative p-5 sm:p-6 lg:p-7 flex flex-col h-full">
-        {/* Icon */}
-        <div className="flex items-start mb-4">
-          <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-lg bg-dark-800 border border-accent/8 flex items-center justify-center text-accent/60 group-hover:bg-dark-750 group-hover:border-accent/15 group-hover:text-accent/90 group-hover:scale-110 group-hover:shadow-[0_0_20px_rgba(0,255,65,0.12)] transition-all duration-400">
-            {iconMap[project.icon]}
+  // ── 1. FEATURED HERO CARD (Full Width Horizontal) ──
+  if (variant === 'featured') {
+    return (
+      <div className="editorial-card p-6 sm:p-8 md:p-10 border-accent/30 relative overflow-hidden group">
+        <div className="flex items-center justify-between border-b border-brand-border pb-4 mb-6">
+          <div className="flex items-center gap-3">
+            <span className="px-2.5 py-1 text-[11px] font-mono font-semibold uppercase rounded bg-accent/10 text-accent border border-accent/20">
+              01 / FEATURED PROJECT
+            </span>
+            <span className="text-xs font-mono text-text-muted">MERN + AWS S3</span>
           </div>
+          <span className="text-xs font-mono text-text-dim">2026</span>
         </div>
 
-        <h3 className="text-base sm:text-lg font-bold font-display text-white/90 mb-2 group-hover:text-accent/85 transition-colors duration-300">
-          {project.name}
-        </h3>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          <div className="lg:col-span-7 space-y-4">
+            <h3 className="text-2xl sm:text-3xl font-bold font-display text-text-primary group-hover:text-accent transition-colors duration-200">
+              {project.title}
+            </h3>
+            <p className="text-sm sm:text-base text-text-secondary leading-relaxed">
+              {project.description}
+            </p>
+            {project.caseStudy && (
+              <div className="p-4 rounded bg-brand-bg border border-brand-border text-xs text-text-muted space-y-1 font-mono">
+                <span className="text-accent block font-semibold">ARCHITECTURE NOTE:</span>
+                <p>{project.caseStudy.architecture}</p>
+              </div>
+            )}
+            <div className="flex flex-wrap gap-1.5 pt-2">
+              {project.technologies.map((tech) => (
+                <span key={tech} className="tech-pill font-mono text-[11px]">
+                  {tech}
+                </span>
+              ))}
+            </div>
+          </div>
 
-        <p className="text-surface-300/30 text-xs sm:text-sm leading-relaxed mb-4 flex-grow group-hover:text-surface-300/45 transition-colors duration-400">
+          <div className="lg:col-span-5 flex flex-col items-start lg:items-end justify-between space-y-6">
+            <div className="w-full editorial-card p-4 bg-brand-bg space-y-2 font-mono text-xs text-text-muted">
+              <div className="flex justify-between border-b border-brand-border pb-2">
+                <span>AUTH:</span>
+                <span className="text-text-primary">JWT Token</span>
+              </div>
+              <div className="flex justify-between border-b border-brand-border pb-2">
+                <span>STORAGE:</span>
+                <span className="text-accent">AWS S3 Pre-signed URLs</span>
+              </div>
+              <div className="flex justify-between">
+                <span>DATABASE:</span>
+                <span className="text-text-primary">PostgreSQL</span>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-3">
+              {project.caseStudy && (
+                <button onClick={onCaseStudy} className="btn-primary">
+                  View Case Study →
+                </button>
+              )}
+              {project.github && (
+                <a href={project.github} target="_blank" rel="noopener noreferrer" className="btn-secondary">
+                  GitHub
+                </a>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // ── 2. MEDIUM EDITORIAL CARD (2-Column Grid) ──
+  if (variant === 'medium') {
+    return (
+      <div className={`editorial-card p-6 flex flex-col justify-between h-full group ${isCyan ? 'editorial-card-cyan' : ''}`}>
+        <div>
+          <div className="flex items-center justify-between border-b border-brand-border pb-3 mb-4">
+            <span className={`text-[10px] font-mono font-semibold uppercase tracking-wider ${isCyan ? 'text-cyan' : 'text-accent'}`}>
+              {project.category.toUpperCase()}
+            </span>
+            {project.isDemo && (
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-brand-surface-2 text-text-muted border border-brand-border">
+                CONCEPT DEMO
+              </span>
+            )}
+          </div>
+
+          <h3 className="text-lg font-bold font-display text-text-primary mb-2 group-hover:text-accent transition-colors duration-200">
+            {project.title}
+          </h3>
+          <p className="text-xs sm:text-sm text-text-secondary leading-relaxed mb-4">
+            {project.description}
+          </p>
+        </div>
+
+        <div>
+          <div className="flex flex-wrap gap-1.5 mb-4">
+            {project.technologies.map((tech) => (
+              <span key={tech} className="tech-pill text-[10px]">
+                {tech}
+              </span>
+            ))}
+          </div>
+
+          <div className="pt-3 border-t border-brand-border flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              {project.github && (
+                <a href={project.github} target="_blank" rel="noopener noreferrer" className="text-xs font-mono text-text-muted hover:text-text-primary">
+                  GitHub ↗
+                </a>
+              )}
+              {project.liveDemo && (
+                <a href={project.liveDemo} target="_blank" rel="noopener noreferrer" className="text-xs font-mono text-accent hover:underline">
+                  Live Demo ↗
+                </a>
+              )}
+            </div>
+            {project.caseStudy && (
+              <button onClick={onCaseStudy} className="text-xs font-mono text-accent hover:underline">
+                Case Study →
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // ── 3. MICRO TECHNICAL CARD (3-Column Grid) ──
+  return (
+    <div className="editorial-card p-5 flex flex-col justify-between h-full group">
+      <div>
+        <div className="flex items-center justify-between mb-3 text-[10px] font-mono">
+          <span className="text-cyan">{project.category.toUpperCase()}</span>
+          {project.isDemo && <span className="text-text-dim">DEMO</span>}
+        </div>
+        <h4 className="text-sm font-bold font-display text-text-primary mb-2 group-hover:text-cyan transition-colors duration-200">
+          {project.title}
+        </h4>
+        <p className="text-xs text-text-secondary leading-relaxed mb-3 line-clamp-3">
           {project.description}
         </p>
+      </div>
 
-        <div className="flex flex-wrap gap-1.5">
-          {project.techStack.map((tech) => (
-            <span
-              key={tech}
-              className="px-2.5 py-1 text-[10px] sm:text-xs font-medium font-mono rounded-md bg-dark-800 text-accent/40 border border-accent/[0.06] group-hover:bg-dark-750 group-hover:text-accent/60 group-hover:border-accent/10 transition-all duration-400"
-            >
+      <div>
+        <div className="flex flex-wrap gap-1 mb-3">
+          {project.technologies.slice(0, 4).map((tech) => (
+            <span key={tech} className="tech-pill text-[9px] px-2 py-0.5">
               {tech}
             </span>
           ))}
         </div>
+        {project.github && (
+          <a href={project.github} target="_blank" rel="noopener noreferrer" className="text-[11px] font-mono text-text-muted hover:text-text-primary block pt-2 border-t border-brand-border">
+            GitHub Code ↗
+          </a>
+        )}
       </div>
-
-      {/* Hover overlay with GitHub & Live URL buttons — centered */}
-      {hasLinks && (
-        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 pointer-events-none group-hover:pointer-events-auto">
-          {/* Full-card gradient backdrop */}
-          <div className="absolute inset-0 bg-[#060d0a]/85 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-xl" />
-
-          {/* Buttons container — centered */}
-          <div className="relative z-10 flex flex-col gap-3 scale-90 group-hover:scale-100 translate-y-3 group-hover:translate-y-0 transition-all duration-500 ease-out">
-            {project.github && (
-              <a
-                href={project.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2.5 px-6 py-3 rounded-xl bg-white/[0.07] hover:bg-accent/15 border border-white/[0.1] hover:border-accent/30 backdrop-blur-md text-white/80 hover:text-accent text-sm font-semibold tracking-wide transition-all duration-300 hover:scale-105 hover:shadow-[0_0_28px_rgba(0,255,65,0.18)] opacity-0 group-hover:opacity-100"
-                style={{ transitionDelay: '100ms' }}
-                aria-label={`GitHub link for ${project.name}`}
-              >
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
-                </svg>
-                GitHub
-              </a>
-            )}
-            {project.live && (
-              <a
-                href={project.live}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2.5 px-6 py-3 rounded-xl bg-accent/10 hover:bg-accent/20 border border-accent/20 hover:border-accent/40 backdrop-blur-md text-accent/80 hover:text-accent text-sm font-semibold tracking-wide transition-all duration-300 hover:scale-105 hover:shadow-[0_0_28px_rgba(0,255,65,0.22)] opacity-0 group-hover:opacity-100"
-                style={{ transitionDelay: '200ms' }}
-                aria-label={`Live demo for ${project.name}`}
-              >
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
-                </svg>
-                Live Demo
-              </a>
-            )}
-          </div>
-        </div>
-      )}
     </div>
   )
 }

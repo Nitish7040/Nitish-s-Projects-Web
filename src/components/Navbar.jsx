@@ -1,23 +1,29 @@
 import { useState, useEffect } from 'react'
 
 const navLinks = [
-  { label: 'Projects', href: '#projects' },
-  { label: 'Contact', href: '#contact' },
+  { label: '01 / HOME', href: '#home', id: 'home' },
+  { label: '02 / ABOUT', href: '#about', id: 'about' },
+  { label: '03 / SKILLS', href: '#skills', id: 'skills' },
+  { label: '04 / EXP', href: '#experience', id: 'experience' },
+  { label: '05 / WORK', href: '#projects', id: 'projects' },
+  { label: '06 / CLOUD', href: '#aws-devops', id: 'aws-devops' },
+  { label: '07 / SERVICES', href: '#services', id: 'services' },
+  { label: '08 / CONTACT', href: '#contact', id: 'contact' },
 ]
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
-  const [activeSection, setActiveSection] = useState('projects')
+  const [activeSection, setActiveSection] = useState('home')
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 10)
+      setScrolled(window.scrollY > 20)
 
-      const sections = ['projects', 'contact']
+      const sections = navLinks.map((l) => l.id)
       for (const section of [...sections].reverse()) {
         const el = document.getElementById(section)
-        if (el && window.scrollY >= el.offsetTop - 140) {
+        if (el && window.scrollY >= el.offsetTop - 120) {
           setActiveSection(section)
           break
         }
@@ -31,98 +37,122 @@ function Navbar() {
 
   const handleNavClick = (href) => {
     setIsOpen(false)
-    const el = document.querySelector(href)
+    const targetId = href.replace('#', '')
+    const el = document.getElementById(targetId)
     if (el) {
-      el.scrollIntoView({ behavior: 'smooth' })
+      const yOffset = -70
+      const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset
+      window.scrollTo({ top: y, behavior: 'smooth' })
     }
   }
 
   return (
-    <nav
+    <header
       id="navbar"
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? 'glass shadow-xl shadow-black/30 py-2.5'
-          : 'bg-transparent py-4 md:py-5'
+          ? 'bg-brand-bg/95 backdrop-blur-md border-b border-brand-border py-3 shadow-lg shadow-black/40'
+          : 'bg-transparent py-5 md:py-6'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
+          {/* Logo / Brand */}
           <a
-            href="#projects"
-            onClick={(e) => { e.preventDefault(); handleNavClick('#projects') }}
-            className="group flex items-center gap-2.5"
+            href="#home"
+            onClick={(e) => { e.preventDefault(); handleNavClick('#home') }}
+            className="group flex items-center gap-3"
           >
             <img
-              src="/Nitish_final.jpg"
+              src="/Nitish_Portrait.png"
               alt="Nitish Pandey"
-              className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg border border-accent/20 bg-dark-800 object-cover object-top group-hover:border-accent/40 group-hover:shadow-[0_0_18px_rgba(0,255,65,0.1)] transition-all duration-300"
+              className="w-8 h-8 rounded border border-brand-border object-cover object-top group-hover:border-accent/50 transition-colors duration-200"
             />
-            <span className="text-lg sm:text-xl font-bold font-display text-white tracking-tight">
-              Nitish <span className="gradient-text">Pandey</span>
-            </span>
+            <div className="flex flex-col">
+              <span className="text-sm font-bold font-display text-text-primary tracking-tight leading-none">
+                NITISH PANDEY
+              </span>
+              <span className="text-[10px] font-mono text-text-muted leading-none mt-1">
+                MERN &amp; AWS
+              </span>
+            </div>
           </a>
 
-          <div className="hidden md:flex items-center gap-1">
+          {/* Desktop Navigation links */}
+          <nav className="hidden lg:flex items-center gap-1" aria-label="Main Navigation">
             {navLinks.map((link) => (
               <a
-                key={link.href}
+                key={link.id}
                 href={link.href}
                 onClick={(e) => { e.preventDefault(); handleNavClick(link.href) }}
-                className={`relative px-5 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
-                  activeSection === link.href.slice(1)
-                    ? 'text-accent bg-accent/[0.07]'
-                    : 'text-surface-300/50 hover:text-accent/70 hover:bg-accent/[0.04]'
+                className={`px-3 py-1.5 rounded text-xs font-mono tracking-wide transition-all duration-200 ${
+                  activeSection === link.id
+                    ? 'text-accent bg-accent/10 border border-accent/20 font-semibold'
+                    : 'text-text-muted hover:text-text-primary hover:bg-brand-surface'
                 }`}
               >
                 {link.label}
-                {activeSection === link.href.slice(1) && (
-                  <span className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 w-5 h-0.5 bg-gradient-to-r from-accent/80 to-primary-400/60 rounded-full" />
+              </a>
+            ))}
+          </nav>
+
+          {/* Action Button & Mobile Toggle */}
+          <div className="flex items-center gap-3">
+            <a
+              href="/resume.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden sm:inline-flex btn-primary"
+            >
+              Resume ↓
+            </a>
+
+            <button
+              id="mobile-menu-toggle"
+              onClick={() => setIsOpen(!isOpen)}
+              className="lg:hidden w-8 h-8 rounded bg-brand-surface border border-brand-border flex items-center justify-center text-text-muted hover:text-text-primary"
+              aria-label="Toggle menu"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                {isOpen ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                 )}
-              </a>
-            ))}
+              </svg>
+            </button>
           </div>
-
-          <button
-            id="mobile-menu-toggle"
-            onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden relative w-9 h-9 rounded-lg bg-dark-800 border border-accent/10 hover:bg-dark-750 hover:border-accent/20 flex items-center justify-center transition-all duration-300"
-            aria-label="Toggle menu"
-          >
-            <div className="w-[18px] h-3.5 relative flex flex-col justify-between">
-              <span className={`block h-[2px] bg-accent/80 rounded-full transition-all duration-300 origin-center ${isOpen ? 'rotate-45 translate-y-[6px]' : ''}`} />
-              <span className={`block h-[2px] bg-accent/80 rounded-full transition-all duration-300 ${isOpen ? 'opacity-0 scale-0' : ''}`} />
-              <span className={`block h-[2px] bg-accent/80 rounded-full transition-all duration-300 origin-center ${isOpen ? '-rotate-45 -translate-y-[6px]' : ''}`} />
-            </div>
-          </button>
         </div>
 
-        <div
-          id="mobile-menu"
-          className={`md:hidden overflow-hidden transition-all duration-500 ease-in-out ${
-            isOpen ? 'max-h-48 opacity-100 mt-3' : 'max-h-0 opacity-0'
-          }`}
-        >
-          <div className="glass-card-elevated rounded-xl p-2 space-y-0.5">
+        {/* Mobile Menu Drawer */}
+        {isOpen && (
+          <div className="lg:hidden mt-3 pt-3 border-t border-brand-border bg-brand-surface rounded p-3 space-y-1">
             {navLinks.map((link) => (
               <a
-                key={link.href}
+                key={link.id}
                 href={link.href}
                 onClick={(e) => { e.preventDefault(); handleNavClick(link.href) }}
-                className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-300 ${
-                  activeSection === link.href.slice(1)
-                    ? 'text-accent bg-accent/[0.07]'
-                    : 'text-surface-300/40 hover:text-accent/70 hover:bg-accent/[0.04]'
+                className={`block px-3 py-2 rounded text-xs font-mono tracking-wide ${
+                  activeSection === link.id
+                    ? 'text-accent bg-accent/10 font-semibold'
+                    : 'text-text-muted hover:text-text-primary'
                 }`}
               >
-                <span className={`w-1.5 h-1.5 rounded-full transition-colors duration-300 ${activeSection === link.href.slice(1) ? 'bg-accent' : 'bg-surface-300/15'}`} />
                 {link.label}
               </a>
             ))}
+            <a
+              href="/resume.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block text-center btn-primary mt-2"
+            >
+              Download Resume ↓
+            </a>
           </div>
-        </div>
+        )}
       </div>
-    </nav>
+    </header>
   )
 }
 
