@@ -61,9 +61,9 @@ const projects = [
       'Responsive design',
     ],
     github: 'https://github.com/Nitish7040/Nitish_Portfolio',
-    liveDemo: 'https://nitishpandey.site/',
+    // liveDemo: 'https://nitishpandey.site/',
     icon: 'terminal',
-    featured: true,
+    featured: false,
     isDemo: false,
     caseStudy: {
       problem:
@@ -84,6 +84,48 @@ const projects = [
       ],
       deployment:
         'Automated CI/CD pipeline via GitHub Actions deploying to AWS S3 bucket with CloudFront global CDN distribution and SSL certificate management.',
+    },
+  },
+
+  {
+    id: 'freelance-website',
+    title: 'Freelance Website — AWS S3 + CloudFront + CI/CD',
+    category: 'aws',
+    description:
+      'Delivered static website hosting on AWS S3 integrated with CloudFront CDN for optimized global content delivery, applied IAM least-privilege policies across 10+ S3 resources, and built GitHub Actions CI/CD pipelines with CloudWatch monitoring.',
+    technologies: ['AWS S3', 'CloudFront', 'AWS IAM', 'GitHub Actions', 'CloudWatch', 'CI/CD'],
+    features: [
+      'Delivered static website hosting on AWS S3 integrated with CloudFront CDN',
+      'Optimized global content delivery performance',
+      'Applied IAM roles and bucket policies across 10+ S3 resources',
+      'Enforced least-privilege access control',
+      'Built GitHub Actions pipelines for continuous S3 deployment',
+      'Enabled centralized monitoring via CloudWatch',
+    ],
+    github: 'https://github.com/Nitish7040',
+    liveDemo: 'http://freelance-website-836.s3-website.ap-south-1.amazonaws.com/',
+    icon: 'cloud',
+    featured: true,
+    isDemo: false,
+    caseStudy: {
+      problem:
+        'Client required scalable, highly secure static website hosting with global CDN caching, automated deployment pipelines, and centralized access monitoring.',
+      solution:
+        'Engineered an AWS static website solution using S3 for hosting, CloudFront for CDN distribution, IAM roles/policies for least-privilege security across 10+ S3 resources, and GitHub Actions for continuous deployment.',
+      architecture:
+        'GitHub Actions (CI/CD) -> AWS S3 (Bucket Hosting) -> AWS CloudFront CDN (Global Distribution) -> CloudWatch (Monitoring & Logging)',
+      challenges: [
+        'Applying IAM roles and bucket policies across 10+ S3 resources while strictly enforcing least-privilege access control',
+        'Configuring CloudFront CDN caching & SSL for optimized global delivery',
+        'Creating automated deployment pipelines via GitHub Actions for seamless static site deployment',
+      ],
+      learned: [
+        'Best practices for S3 bucket policy security and IAM role configuration',
+        'CloudFront CDN edge caching strategies and performance optimization',
+        'CI/CD pipeline automation for cloud infrastructure with CloudWatch monitoring',
+      ],
+      deployment:
+        'GitHub Actions pipeline automatically building and deploying static site assets to AWS S3, triggering CloudFront CDN invalidation, with CloudWatch logging.',
     },
   },
 
