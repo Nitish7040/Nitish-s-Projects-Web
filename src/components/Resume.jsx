@@ -24,10 +24,10 @@ function Resume() {
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-            <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="btn-primary">
+            <a href="/Nitish-UpdatedResume2-1.pdf" target="_blank" rel="noopener noreferrer" className="btn-primary">
               Download Resume ↓
             </a>
-            <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="btn-secondary">
+            <a href="/Nitish-UpdatedResume2-1.pdf" target="_blank" rel="noopener noreferrer" className="btn-secondary">
               View Resume PDF ↗
             </a>
           </div>
