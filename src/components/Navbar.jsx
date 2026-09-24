@@ -99,7 +99,7 @@ function Navbar() {
           {/* Action Button & Mobile Toggle */}
           <div className="flex items-center gap-3">
             <a
-              href="/resume.pdf"
+              href="/Nitish-UpdatedResume2-1.pdf"
               target="_blank"
               rel="noopener noreferrer"
               className="hidden sm:inline-flex btn-primary"
