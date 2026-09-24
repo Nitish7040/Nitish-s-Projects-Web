@@ -1,11 +1,104 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef, useCallback } from 'react'
+import gsap from 'gsap'
+
+const ROLES = [
+  { line1: 'MERN STACK', line2: 'DEVELOPER', accentClass: 'text-accent' },
+  { line1: 'CLOUD & DEVOPS', line2: 'ENGINEER', accentClass: 'text-cyan' },
+]
+
+const CYCLE_DURATION = 3.5 // seconds between transitions
 
 function Hero() {
   const [isVisible, setIsVisible] = useState(false)
+  const [activeIndex, setActiveIndex] = useState(0)
+  const line1Ref = useRef(null)
+  const line2Ref = useRef(null)
+  const timelineRef = useRef(null)
+  const intervalRef = useRef(null)
 
   useEffect(() => {
     setIsVisible(true)
   }, [])
+
+  const animateSwap = useCallback((nextIndex) => {
+    if (timelineRef.current) timelineRef.current.kill()
+
+    const tl = gsap.timeline({
+      onComplete: () => {
+        setActiveIndex(nextIndex)
+      },
+    })
+    timelineRef.current = tl
+
+    // Slide out current text
+    tl.to(line1Ref.current, {
+      y: -40,
+      opacity: 0,
+      duration: 0.4,
+      ease: 'power3.in',
+    })
+    tl.to(
+      line2Ref.current,
+      {
+        y: -40,
+        opacity: 0,
+        duration: 0.4,
+        ease: 'power3.in',
+      },
+      '<0.05'
+    )
+
+    // Swap text content mid-animation
+    tl.call(() => {
+      if (line1Ref.current) line1Ref.current.textContent = ROLES[nextIndex].line1
+      if (line2Ref.current) {
+        line2Ref.current.textContent = ROLES[nextIndex].line2
+        // Swap accent color
+        ROLES.forEach((r) => line2Ref.current.classList.remove(r.accentClass))
+        line2Ref.current.classList.add(ROLES[nextIndex].accentClass)
+      }
+    })
+
+    // Reset position below and slide in
+    tl.set(line1Ref.current, { y: 40 })
+    tl.set(line2Ref.current, { y: 40 })
+
+    tl.to(line1Ref.current, {
+      y: 0,
+      opacity: 1,
+      duration: 0.5,
+      ease: 'power3.out',
+    })
+    tl.to(
+      line2Ref.current,
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.5,
+        ease: 'power3.out',
+      },
+      '<0.08'
+    )
+  }, [])
+
+  useEffect(() => {
+    // Start the cycling interval after a brief initial delay
+    const startDelay = setTimeout(() => {
+      intervalRef.current = setInterval(() => {
+        setActiveIndex((prev) => {
+          const next = (prev + 1) % ROLES.length
+          animateSwap(next)
+          return prev // actual update happens in onComplete
+        })
+      }, CYCLE_DURATION * 1000)
+    }, 2000) // wait 2s after page load before first swap
+
+    return () => {
+      clearTimeout(startDelay)
+      if (intervalRef.current) clearInterval(intervalRef.current)
+      if (timelineRef.current) timelineRef.current.kill()
+    }
+  }, [animateSwap])
 
   const handleScrollTo = (targetId) => {
     const el = document.getElementById(targetId)
@@ -39,11 +132,18 @@ function Hero() {
 
           {/* Editorial Grid Layout */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-            {/* Left Column — Big Display Heading */}
+            {/* Left Column — Big Display Heading with animated role swap */}
             <div className="lg:col-span-8 space-y-4">
-              <h1 className="font-display text-4xl sm:text-6xl md:text-7xl font-extrabold text-text-primary tracking-tight leading-[1.05]">
-                MERN STACK <br />
-                <span className="text-accent">DEVELOPER</span>
+              <h1 className="font-display text-4xl sm:text-6xl md:text-7xl font-extrabold text-text-primary tracking-tight leading-[1.05] overflow-hidden">
+                <span ref={line1Ref} className="block will-change-transform">
+                  {ROLES[activeIndex].line1}
+                </span>
+                <span
+                  ref={line2Ref}
+                  className={`block will-change-transform ${ROLES[activeIndex].accentClass}`}
+                >
+                  {ROLES[activeIndex].line2}
+                </span>
               </h1>
               <p className="font-display text-xl sm:text-2xl md:text-3xl font-semibold text-text-secondary/80 tracking-tight">
                 Building scalable web applications &amp; cloud-ready systems.
